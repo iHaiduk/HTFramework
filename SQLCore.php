@@ -8,7 +8,7 @@
  * Timerewrite  20:30
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
- * Name		      SQLCore
+ * Name		    SQLCore
  * Infofile     Class for database operations
  * Version      1.0.5 RC1
  */
