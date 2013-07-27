@@ -202,9 +202,36 @@ $sql->ClearArguments("tableName","where","limit");
 
 
 
+
+## Transaction functions
+#### Initiates a transaction
+```php
+$sql->beginTransaction();
+```
+#### Commits a transaction
+```php
+$sql->commit();
+```
+#### Rolls back a transaction
+```php
+$sql->rollback();
+```
+
+### Examples
+```php
+$sql->beginTransaction();
+$sth = $sql->Init("UPDATE ht_page SET title = 'hamburger'");
+$sth = $sql->Init("DROP TABLE ht_page");
+$sql->rollback();
+```
+
+
+
+
+
 ## List of all functions
 
-### Operation with row
+#### Operation with row
 ```php
 $sql->OneResult(...);
 $sql->ArrayResults(...);
@@ -213,8 +240,13 @@ $sql->QueryArrayResult(...);
 $sql->CountROW(...);
 $sql->QueryCountROW(...);
 ```
-
-### Other
+#### Operation transaction
+```php
+$sql->beginTransaction(...);
+$sql->commit(...);
+$sql->rollback(...);
+```
+#### Other
 ```php
 $sql->Init(...);
 $sql->bindMore(...);
