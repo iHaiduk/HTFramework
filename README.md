@@ -60,12 +60,12 @@ $pages = $sql->ArrayResults(array(
 ### Execute the query
 #### First version which returns an array of
 ```php
-$pages = $sql->OneResult(array("tableName"=>"page"));
+$page = $sql->OneResult(array("tableName"=>"page"));
 ```
 
 #### Second version which returns an object
 ```php
-$pages = $sql->OneResult(array("tableName"=>"page", "type_array_result"=>false));
+$page = $sql->OneResult(array("tableName"=>"page", "type_array_result"=>false));
 ```
 #### Results Array
 ```php
@@ -128,12 +128,12 @@ $pages[...]->text
 ### Execute the query
 #### First version which returns an array of
 ```php
-$pages = $sql->QueryResult("SELECT * FROM `ht_page`");
+$page = $sql->QueryResult("SELECT * FROM `ht_page`");
 ```
 
 #### Second version which returns an object
 ```php
-$pages = $sql->QueryResult("SELECT * FROM `ht_page`",array("type_array_result"=>false));
+$page = $sql->QueryResult("SELECT * FROM `ht_page`",array("type_array_result"=>false));
 ```
 #### Results
 
