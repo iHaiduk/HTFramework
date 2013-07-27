@@ -178,11 +178,11 @@ The result is similar point: Choose from the database one record
 
 #### Standart query
 ```php
-$count = $sql->CountROW(array("tableName"=>"page"));
+$count = $sql->CountRow(array("tableName"=>"page"));
 ```
 #### Your query
 ```php
-$count = $sql->QueryCountROW("SELECT id FROM `ht_page`");
+$count = $sql->QueryCountRow("SELECT id FROM `ht_page`");
 ```
 
 ## Update rows
@@ -254,11 +254,11 @@ $sql->rollback();
 ```php
 $sql->OneResult(...);
 $sql->ArrayResults(...);
+$sql->CountRow(...);
+$sql->UpdateRow(...);
 $sql->QueryResult(...);
 $sql->QueryArrayResult(...);
-$sql->CountROW(...);
-$sql->QueryCountROW(...);
-$sql->UpdateRow(...);
+$sql->QueryCountRow(...);
 $sql->QueryUpdateRow(...);
 ```
 #### Operation transaction
