@@ -197,3 +197,26 @@ $sql->ClearArguments();
 ```php
 $sql->ClearArguments("tableName","where","limit");
 ```
+
+
+
+
+
+## List of all functions
+
+### Operation with row
+```php
+$sql->OneResult(...);
+$sql->ArrayResults(...);
+$sql->QueryResult(...);
+$sql->QueryArrayResult(...);
+$sql->CountROW(...);
+$sql->QueryCountROW(...);
+```
+
+### Other
+```php
+$sql->Init(...);
+$sql->bindMore(...);
+$sql->ClearArguments(...);
+```
