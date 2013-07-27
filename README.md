@@ -198,7 +198,7 @@ $update = $sql->QueryUpdateRow("UPDATE ht_page SET title='My update'");
 $sql->bindMore(array(":set_update"=>"My update"));
 $update = $sql->QueryUpdateRow("UPDATE ht_page SET title=:set_update");
 ```
-### Return
+### Results
 bool true/false
 
 
@@ -257,6 +257,8 @@ $sql->QueryResult(...);
 $sql->QueryArrayResult(...);
 $sql->CountROW(...);
 $sql->QueryCountROW(...);
+$sql->UpdateRow(...);
+$sql->QueryUpdateRow(...);
 ```
 #### Operation transaction
 ```php
