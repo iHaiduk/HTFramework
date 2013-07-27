@@ -40,3 +40,9 @@ class functions.
 | 4       |        fourth |     Fourth description text   
 | 5       |        fifth|     Fifth description text   
 
+
+### Choose from the database one record
+
+#### First version which returns an array of
+
+
