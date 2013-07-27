@@ -155,11 +155,34 @@ $pages = $sql->QueryArrayResult("SELECT * FROM `ht_page`",array("type_array_resu
 
 The result is similar point: Choose from the database all records
 
+##Run a secure request
 
+### Execute the query
+#### First version
+```php
+$id_page = 3;
+$page = $sql->OneResult(array("where"=>"id = :num", "limit"=>2),array(":num"=>$id_page));
+```
+#### Second version
+```php
+$id_page = 3;
+$sql->bindMore(array(":num"=>$id_page));
+$page = $sql->OneResult(array("where"=>"id = :num", "limit"=>2));
+```
 
+#### Results
+The result is similar point: Choose from the database one record
 
+##Return the number of records in the database
 
-
+#### Standart query
+```php
+$count = $sql->CountROW(array("tableName"=>"page"));
+```
+#### Your query
+```php
+$count = $sql->QueryCountROW("SELECT id FROM `ht_page`");
+```
 
 
 
