@@ -229,13 +229,11 @@ $insert = $sql->InsertRow(array("tableName"=>"page","values"=>
 #### Third version
 ```php
 $insert = $sql->QueryInsertRow("INSERT INTO ht_page(`title`,`text`) VALUES ('Next page','Next Description text')");
-));
 ```
 #### Fourth version
 ```php
 $sql->bindMore(array(":title_page"=>"Next page", ":text_page"=>"Next Description text"));
 $insert = $sql->QueryInsertRow("INSERT INTO ht_page(`title`,`text`) VALUES (:title_page,:text_page)");
-));
 ```
 ### Results
 integer (last id)
