@@ -41,6 +41,20 @@ class functions.
 | 5       |        fifth|     Fifth description text   
 
 
+## All of the options available for the call
+```php
+$pages = $sql->ArrayResults(array(
+    "tableName"=>"page",
+    "expression" => "id, title, page",
+    "where" => "id > 2",
+    "group" => "text",
+    "order => "id DESC",
+    "limit" => 2,
+    "exit" => false,
+    "sql_cache" => false
+));
+```
+
 ## Choose from the database one record
 
 ### Execute the query
@@ -140,3 +154,23 @@ $pages = $sql->QueryArrayResult("SELECT * FROM `ht_page`",array("type_array_resu
 #### Results
 
 The result is similar point: Choose from the database all records
+
+
+
+
+
+
+
+
+
+
+
+## Clear all parameters for queries
+```php
+$sql->ClearArguments();
+```
+
+## Clear some of the parameters for queries
+```php
+$sql->ClearArguments("tableName","where","limit");
+```
