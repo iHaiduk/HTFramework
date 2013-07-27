@@ -220,8 +220,8 @@ $sql->rollback();
 ### Examples
 ```php
 $sql->beginTransaction();
-$sth = $sql->Init("UPDATE ht_page SET title = 'hamburger'");
-$sth = $sql->Init("DROP TABLE ht_page");
+$sql->Init("UPDATE ht_page SET title = 'hamburger'");
+$sql->Init("DROP TABLE ht_page");
 $sql->rollback();
 ```
 
