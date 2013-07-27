@@ -4,8 +4,8 @@
  * Author 	    Igor Gayduk
  * Datecreate   5.12.2012
  * Timecreate:  20:05
- * Daterewrite  27.07.2013
- * Timerewrite  21:10
+ * Daterewrite  28.07.2013
+ * Timerewrite  00:55
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -46,6 +46,7 @@ class SQLCore extends \PDO{
 
     public $type_array_result = true;
     protected $transactionCounter = 0;
+    private $level = 0;
 
     /**
      * Constructed, Initialize Params Class
@@ -160,7 +161,7 @@ class SQLCore extends \PDO{
      * @param array $parameters
      * @return int
      */
-    public function CountROW(array $localArgs = array(), array $parameters = array()){
+    public function CountRow(array $localArgs = array(), array $parameters = array()){
         $this->SetArguments($localArgs);
         $this->bindMore($parameters);
         return $this->SelectQuery($localArgs)->rowCount();
@@ -187,6 +188,52 @@ class SQLCore extends \PDO{
             if($this->exit) $this->exitCode();
             else{
                 if($this->sQuery == $this->Init($this->sQuery)->queryString) return true;
+                else false;
+            }
+        }
+        catch (PDOException $e)
+        {
+            echo $e->getMessage();
+            die();
+        }
+    }
+
+    /**
+     * @param array $localArgs
+     * @return int (last id)
+     */
+    public function InsertRow(array $localArgs = array()){
+        $this->SetArguments($localArgs);
+        $this->level=0;
+        $this->levelArray($this->values);
+
+        $values = $keys = "";
+        if($this->level){
+            foreach($this->values as $value_level_one){
+                $values .= "(";
+                foreach($value_level_one as $value_level_two){
+                    $value_level_two = (preg_match("/.*?(\\(.*\\))/is",$value_level_two)) ? $value_level_two : "'{$value_level_two}'";
+                    $values .= $value_level_two.",";
+                }
+                $values = substr($values,0,-1)."),";
+            }
+            $values = substr($values,0,-1);
+            $keys = implode(",",array_keys(current($this->values)));
+        }else{
+            $values = "(";
+            foreach($this->values as $value_level_one){
+                $value_level_one = (preg_match("/.*?(\\(.*\\))/is",$value_level_one)) ? $value_level_one : "'{$value_level_one}'";
+                $values .= $value_level_one.",";
+            }
+            $values = substr($values,0,-1).")";
+            $keys = implode(",",array_keys($this->values));
+        }
+        try
+        {
+            $this->sQuery = "INSERT INTO ".$this->tablePrefix.$this->tableName."({$keys}) VALUES {$values}";
+            if($this->exit) $this->exitCode();
+            else{
+                if($this->sQuery == $this->Init($this->sQuery)->queryString) return $this->pdo->lastInsertId();
                 else false;
             }
         }
@@ -233,12 +280,27 @@ class SQLCore extends \PDO{
         return $this->Init($query)->rowCount();
     }
 
+    /**
+     * @param string $query
+     * @param array $parameters
+     * @return bool
+     */
     public function QueryUpdateRow($query="", array $parameters = array()){
         $this->bindMore($parameters);
         if($query == $this->Init($query)->queryString) return true;
         else false;
     }
 
+    /**
+     * @param string $query
+     * @param array $parameters
+     * @return int
+     */
+    public function QueryInsertRow($query="", array $parameters = array()){
+        $this->bindMore($parameters);
+        if($query == $this->Init($query)->queryString) return $this->pdo->lastInsertId();
+        else false;
+    }
 
 
 
@@ -308,6 +370,7 @@ class SQLCore extends \PDO{
             foreach($localArgs as $value) $this->$value = false;
         }else $this->tableName=$this->expression=$this->str_join=$this->where=$this->group=$this->order=$this->limit=$this->exit=$this->sql_cache=$this->values=false;
         $this->bindParam = array();
+        $this->level = 0;
     }
 
     /**
@@ -354,5 +417,12 @@ class SQLCore extends \PDO{
         exit($this->sQuery."\n".print_r($this->bindParam,true));
     }
 
+    private function levelArray($array){
+        $v = current($array);
+        if(is_array($v)){
+            $this->level++;
+            $this->levelArray($v);
+        }
+    }
 
 }
