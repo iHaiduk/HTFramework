@@ -174,7 +174,8 @@ class SQLCore extends \PDO{
         $this->SetArguments($localArgs);
         $values_update = "";
         foreach($this->values as $key=>$value){
-            $values_update .= "`{$key}` = '$value',";
+            $value = (preg_match("/.*?(\\(.*\\))/is",$value)) ? $value : "'{$value}'";
+            $values_update .= "`{$key}` = {$value},";
         }
         $values_update = substr($values_update,0,-1);
         try
