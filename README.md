@@ -289,10 +289,13 @@ $sql->OneResult(...);
 $sql->ArrayResults(...);
 $sql->CountRow(...);
 $sql->UpdateRow(...);
+$sql->InsertRow(...);
+
 $sql->QueryResult(...);
 $sql->QueryArrayResult(...);
 $sql->QueryCountRow(...);
 $sql->QueryUpdateRow(...);
+$sql->QueryInsertRow(...);
 ```
 #### Operation transaction
 ```php
