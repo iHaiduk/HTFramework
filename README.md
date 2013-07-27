@@ -170,6 +170,17 @@ $id_page = 3;
 $sql->bindMore(array(":num"=>$id_page));
 $page = $sql->OneResult(array("where"=>"id = :num", "limit"=>2));
 ```
+#### Third version
+```php
+$id_page = 3;
+$page = $sql->ArrayResults(array("where"=>"id = :num", "limit"=>2),array(":num"=>$id_page));
+```
+#### Fourth version
+```php
+$id_page = 3;
+$sql->bindMore(array(":num"=>$id_page));
+$page = $sql->ArrayResults(array("where"=>"id = :num", "limit"=>2));
+```
 
 #### Results
 The result is similar point: Choose from the database one record
