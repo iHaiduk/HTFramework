@@ -42,6 +42,7 @@ class SQLCore extends \PDO{
     public $limit;
     public $exit = false;
     public $sql_cache = false;
+    public $values;
 
     public $type_array_result = true;
     protected $transactionCounter = 0;
@@ -95,7 +96,7 @@ class SQLCore extends \PDO{
     }
 
     /**
-     * SELECTED ROWS BASE
+     * OPERATION ROWS BASE
      */
 
 
@@ -155,6 +156,47 @@ class SQLCore extends \PDO{
     }
 
     /**
+     * @param array $localArgs
+     * @param array $parameters
+     * @return int
+     */
+    public function CountROW(array $localArgs = array(), array $parameters = array()){
+        $this->SetArguments($localArgs);
+        $this->bindMore($parameters);
+        return $this->SelectQuery($localArgs)->rowCount();
+    }
+
+    /**
+     * @param array $localArgs
+     * @return bool
+     */
+    public function UpdateRow(array $localArgs = array()){
+        $this->SetArguments($localArgs);
+        $values_update = "";
+        foreach($this->values as $key=>$value){
+            $values_update .= "`{$key}` = '$value',";
+        }
+        $values_update = substr($values_update,0,-1);
+        try
+        {
+            $this->where = (!empty($this->where)) ? "WHERE ".preg_replace("/,/"," AND ",$this->where) : false;
+            $this->order = (!empty($this->order)) ? "ORDER BY ".$this->order : false;
+            $this->limit = (!empty($this->limit)) ? "LIMIT ".$this->limit : false;
+            $this->sQuery = "UPDATE `".$this->tablePrefix.$this->tableName."` SET {$values_update} {$this->where} {$this->order} {$this->limit}";
+            if($this->exit) $this->exitCode();
+            else{
+                if($this->sQuery == $this->Init($this->sQuery)->queryString) return true;
+                else false;
+            }
+        }
+        catch (PDOException $e)
+        {
+            echo $e->getMessage();
+            die();
+        }
+    }
+
+    /**
      * @param string $query
      * @param array $localArgs
      * @return mixed
@@ -179,29 +221,22 @@ class SQLCore extends \PDO{
     }
 
     /**
-     * @param array $localArgs
-     * @param array $parameters
-     * @return int
-     */
-    public function CountROW(array $localArgs = array(), array $parameters = array()){
-        $this->SetArguments($localArgs);
-        $this->bindMore($parameters);
-        return $this->SelectQuery($localArgs)->rowCount();
-    }
-
-    /**
      * @param string $query
      * @param array $localArgs
      * @param array $parameters
      * @return int
      */
-    public function QueryCountROW($query="", array $localArgs = array(), array $parameters = array()){
+    public function QueryCountRow($query="", array $localArgs = array(), array $parameters = array()){
         $this->SetArguments($localArgs);
         $this->bindMore($parameters);
         return $this->Init($query)->rowCount();
     }
 
-
+    public function QueryUpdateRow($query="", array $parameters = array()){
+        $this->bindMore($parameters);
+        if($query == $this->Init($query)->queryString) return true;
+        else false;
+    }
 
 
 
@@ -270,7 +305,7 @@ class SQLCore extends \PDO{
         $localArgs = func_get_args();
         if(count($localArgs)>0){
             foreach($localArgs as $value) $this->$value = false;
-        }else $this->tableName=$this->expression=$this->str_join=$this->where=$this->group=$this->order=$this->limit=$this->exit=$this->sql_cache=false;
+        }else $this->tableName=$this->expression=$this->str_join=$this->where=$this->group=$this->order=$this->limit=$this->exit=$this->sql_cache=$this->values=false;
         $this->bindParam = array();
     }
 
