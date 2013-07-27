@@ -32,8 +32,8 @@ $sql = new SQLCore;
 Below some examples of the basic functions of the database class. I've included a SQL dump so you can easily test the database
 class functions. 
 #### The ht_page table 
-| id | title | text | sex | age
-|:-----------:|:------------:|:------------:|:------------:|:------------:|
+| id | title | text 
+|:-----------:|:------------:|:------------:|
 | 1       |        first |     First description text  
 | 2       |        second  |     Second description text  
 | 3       |        third  |     Third description text   
