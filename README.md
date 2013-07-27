@@ -41,8 +41,102 @@ class functions.
 | 5       |        fifth|     Fifth description text   
 
 
-### Choose from the database one record
+## Choose from the database one record
 
+### Execute the query
 #### First version which returns an array of
+```php
+$pages = $sql->OneResult(array("tableName"=>"page"));
+```
 
+#### Second version which returns an object
+```php
+$pages = $sql->OneResult(array("tableName"=>"page", "type_array_result"=>false));
+```
+#### Results Array
+```php
+Array
+(
+    [id] => 1
+    [title] => Test
+    [text] => My test description
+)
+```
+#### Results Object
+```php
+$pages->id
+$pages->title
+$pages->text
+```
 
+## Choose from the database all records
+
+### Execute the query
+#### First version which returns an array of
+```php
+$pages = $sql->ArrayResults(array("tableName"=>"page"));
+```
+
+#### Second version which returns an object
+```php
+$pages = $sql->ArrayResults(array("tableName"=>"page", "type_array_result"=>false));
+```
+#### Results Array
+```php
+Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [title] => Test
+            [text] => My test description
+        )
+
+    [1] => Array
+        (
+            [id] => 2
+            [title] => Test 2
+            [text] => My test description 2
+        )
+
+    ...........
+)
+```
+#### Results Object
+```php
+$pages[...]->id
+$pages[...]->title
+$pages[...]->text
+```
+
+##Print a single entry for complex or custom queries
+
+### Execute the query
+#### First version which returns an array of
+```php
+$pages = $sql->QueryResult("SELECT * FROM `ht_page`");
+```
+
+#### Second version which returns an object
+```php
+$pages = $sql->QueryResult("SELECT * FROM `ht_page`",array("type_array_result"=>false));
+```
+#### Results
+
+The result is similar point: Choose from the database one record
+
+##Print out all records for complex or custom queries
+
+### Execute the query
+#### First version which returns an array of
+```php
+$pages = $sql->QueryArrayResult("SELECT * FROM `ht_page`");
+```
+
+#### Second version which returns an object
+```php
+$pages = $sql->QueryArrayResult("SELECT * FROM `ht_page`",array("type_array_result"=>false));
+```
+#### Results
+
+The result is similar point: Choose from the database all records
