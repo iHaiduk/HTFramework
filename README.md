@@ -184,6 +184,24 @@ $count = $sql->CountROW(array("tableName"=>"page"));
 $count = $sql->QueryCountROW("SELECT id FROM `ht_page`");
 ```
 
+## Update rows
+#### First version
+```php
+$update = $sql->UpdateRow(array("tableName"=>"page","values"=>array("title"=>"My update")));
+```
+#### Second version
+```php
+$update = $sql->QueryUpdateRow("UPDATE ht_page SET title='My update'");
+```
+#### Third version
+```php
+$sql->bindMore(array(":set_update"=>"My update"));
+$update = $sql->QueryUpdateRow("UPDATE ht_page SET title=:set_update");
+```
+### Return
+bool true/false
+
+
 
 
 
