@@ -205,11 +205,26 @@ bool true/false
 ## Insert data to table
 #### First version
 ```php
-$insert = $sql->InsertRow(array("tableName"=>"page","values"=>array("title"=>"Next page","text"=>"Next Description text")));
+$insert = $sql->InsertRow(array("tableName"=>"page","values"=>
+                array("
+                    title"=>"Next page",
+                    "text"=>"Next Description text"
+                )
+));
 ```
 #### Second version
 ```php
-$insert = $sql->InsertRow(array("tableName"=>"page","values"=>array(array("title"=>"Next page","text"=>"Next Description text"),array("Next page w","Next Description text 2"))));
+$insert = $sql->InsertRow(array("tableName"=>"page","values"=>
+                array(
+                    array(
+                        "title"=>"Next page",
+                        "text"=>"Next Description text"
+                    ),
+                    array("Next page 2","Next Description text 2"),
+                    array("Next page 3","Next Description text 3"),
+                    ..........
+                )
+));
 ```
 
 
