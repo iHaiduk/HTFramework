@@ -46,6 +46,7 @@ class functions.
 $pages = $sql->ArrayResults(array(
     "tableName"=>"page",
     "expression" => "id, title, page",
+    "values" => array(...),
     "where" => "id > 2",
     "group" => "text",
     "order => "id DESC",
