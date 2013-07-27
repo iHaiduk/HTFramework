@@ -1,11 +1,11 @@
 <?php
 /**
- * Group        HT Group
+ * Group          HT Group
  * Author 	    Igor Gayduk
  * Datecreate   5.12.2012
  * Timecreate:  20:05
- * Daterewrite  26.07.2013
- * Timerewrite  20:30
+ * Daterewrite  27.07.2013
+ * Timerewrite  21:10
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -44,6 +44,7 @@ class SQLCore extends \PDO{
     public $sql_cache = false;
 
     public $type_array_result = true;
+    protected $transactionCounter = 0;
 
     /**
      * Constructed, Initialize Params Class
@@ -199,6 +200,45 @@ class SQLCore extends \PDO{
         $this->bindMore($parameters);
         return $this->Init($query)->rowCount();
     }
+
+
+
+
+
+
+    /**
+     * Transaction's operation
+     */
+
+    public function beginTransaction()
+    {
+        if(!$this->transactionCounter++)
+            return $this->pdo->beginTransaction();
+        return $this->transactionCounter >= 0;
+    }
+
+    public function commit()
+    {
+        if(!--$this->transactionCounter)
+            return $this->pdo->commit();
+        return $this->transactionCounter >= 0;
+    }
+
+    public function rollback()
+    {
+        if($this->transactionCounter >= 0)
+        {
+            $this->transactionCounter = 0;
+            return $this->pdo->rollback();
+        }
+        $this->transactionCounter = 0;
+        return false;
+    }
+
+
+
+
+
 
 
 
