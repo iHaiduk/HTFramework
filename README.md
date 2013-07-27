@@ -202,9 +202,15 @@ $update = $sql->QueryUpdateRow("UPDATE ht_page SET title=:set_update");
 ### Results
 bool true/false
 
-
-
-
+## Insert data to table
+#### First version
+```php
+$insert = $sql->InsertRow(array("tableName"=>"page","values"=>array("title"=>"Next page","text"=>"Next Description text")));
+```
+#### Second version
+```php
+$insert = $sql->InsertRow(array("tableName"=>"page","values"=>array(array("title"=>"Next page","text"=>"Next Description text"),array("Next page w","Next Description text 2"))));
+```
 
 
 ## Clear all parameters for queries
