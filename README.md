@@ -315,6 +315,13 @@ $sql->OptimizeTable(array("tableName"=>"page"));
 ### Results
 bool true/false
 
+##Close the database connection
+```php
+$sql->CloseConnect();
+```
+
+
+
 
 ##List all possible requests to work with rows
 (OneResult, ArrayResults, CountRow, UpdateRow, InsertRow, DeleteRow, QueryResult, Query... , ...)
@@ -368,9 +375,9 @@ $sql->QueryDeleteRow(...);
 ```
 #### Operation transaction
 ```php
-$sql->beginTransaction(...);
-$sql->commit(...);
-$sql->rollback(...);
+$sql->beginTransaction();
+$sql->commit();
+$sql->rollback();
 ```
 #### Other
 ```php
@@ -378,4 +385,5 @@ $sql->Init(...);
 $sql->bindMore(...);
 $sql->ClearArguments(...);
 $sql->OptimizeTable(...);
+$sql->CloseConnect();
 ```
