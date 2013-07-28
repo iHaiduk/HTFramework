@@ -422,7 +422,15 @@ class SQLCore extends \PDO{
         if($this->Init('DROP DATABASE `'.$this->dbName.'`')->queryString) return true;
     }
 
-
+    /**
+     * @param array $localArgs
+     * @param $tableStructure
+     * @return mixed
+     */
+    public function createTable(array $localArgs = array(), $tableStructure){
+        $this->SetArguments($localArgs);
+        return $this->pdo->exec('CREATE TABLE `'.$this->tablePrefix.$this->table.'` '.$tableStructure);
+    }
 
 
     /**
