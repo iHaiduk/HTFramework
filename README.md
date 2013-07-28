@@ -360,6 +360,35 @@ $column = $sql->ColumnShow();
 )
 ```
 
+## Work with DataBase
+#### Creates the database. It the DB exists already, it clears it first.
+```php
+$sql->DatabaseCreate(array("dbName"=>"newbase"));
+// OR
+$sql->dbName = "newbase";
+$sql->DatabaseCreate();
+```
+### Results
+bool true/false
+#### Selects the database for use.
+```php
+$sql->DatabaseSelect(array("dbName"=>"newbase"));
+// OR
+$sql->dbName = "newbase";
+$sql->DatabaseSelect();
+```
+### Results
+bool true/false
+#### Drop database
+```php
+$sql->DatabaseDrop(array("dbName"=>"page"));
+// OR
+$sql->dbName = "page";
+$sql->DatabaseDrop();
+```
+### Results
+bool true/false
+
 ## More features
 ### Return the maximum value of the field
 ```php
@@ -464,9 +493,14 @@ $sql->QueryInsertRow(...);
 $sql->QueryDeleteRow(...);
 $sql->QueryHasRow(...);
 ```
-#### Operation with table,column and other
+#### Operation with database, table, column and other
 ```php
+$sql->DatabaseCreate(...);
+$sql->DatabaseSelect(...);
+$sql->DatabaseDrop(...);
+
 $sql->ColumnShow(...);
+
 $sql->GetMax(...);
 $sql->GetMin(...);
 $sql->GetArrayById(...);
