@@ -330,7 +330,7 @@ $sql->CloseConnect();
 
 # Other Info
 
-#### How do I get a response in the form of an object for his own request
+#### How do I get a response in the form of an object for his own request?
 ```php
 $sql->type_array_result = false;
 $page = $sql->QueryResult("SELECT * FROM `ht_page`");
