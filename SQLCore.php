@@ -5,7 +5,7 @@
  * Datecreate   5.12.2012
  * Timecreate:  20:05
  * Daterewrite  28.07.2013
- * Timerewrite  20:20
+ * Timerewrite  22:40
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -31,7 +31,7 @@ class SQLCore extends \PDO{
     private $sQuery;
     private $bindParam;
 
-    public $tableName;
+    public $table;
     public $str_join=false;
     public $expression="*";
     public $where;
@@ -110,9 +110,9 @@ class SQLCore extends \PDO{
         {
             $this->SetArguments($localArgs);
 
-            $this->tableName = (!empty($this->tableName)) ? $this->tableName : false;
+            $this->table = (!empty($this->table)) ? $this->table : false;
             $this->expression = (is_array($this->expression)) ? implode(",",$this->expression) : (!empty($this->expression)) ? $this->expression : "*";
-            $this->where = (!empty($this->where)) ? "WHERE ".preg_replace("/,/"," AND ",$this->where) : false;
+            $this->where = (!empty($this->where)) ? "WHERE ".$this->where : false;
             $this->group = (!empty($this->group)) ? "GROUP BY ".$this->group : false;
             $this->limit = (!empty($this->limit)) ? "LIMIT ".$this->limit : false;
             $this->sql_cache = ($this->sql_cache) ? "SQL_CACHE" : false;
@@ -123,7 +123,7 @@ class SQLCore extends \PDO{
             }else $this->order = $this->str_join = false;
 
 
-            $query = "SELECT ".$this->str_join." ".$this->sql_cache." ".$this->expression." FROM `".$this->tablePrefix.$this->tableName."`
+            $query = "SELECT ".$this->str_join." ".$this->sql_cache." ".$this->expression." FROM `".$this->tablePrefix.$this->table."`
             ".$this->where." ".$this->group." ".$this->order." ".$this->limit;
             return $this->Init($query);
         }
@@ -135,8 +135,8 @@ class SQLCore extends \PDO{
 
     /**
      * @param array $localArgs
+     * @param array $parameters
      * @return mixed
-     * @return_variable one row in base
      */
     public function OneResult(array $localArgs = array(), array $parameters = array()){
         $this->SetArguments($localArgs);
@@ -146,8 +146,8 @@ class SQLCore extends \PDO{
 
     /**
      * @param array $localArgs
+     * @param array $parameters
      * @return mixed
-     * @return_variable all row in base
      */
     public function ArrayResults(array $localArgs = array(), array $parameters = array()){
         $this->SetArguments($localArgs);
@@ -168,6 +168,7 @@ class SQLCore extends \PDO{
 
     /**
      * @param array $localArgs
+     * @param array $parameters
      * @return bool
      */
     public function UpdateRow(array $localArgs = array(), array $parameters = array()){
@@ -184,7 +185,7 @@ class SQLCore extends \PDO{
             $this->where = (!empty($this->where)) ? "WHERE ".preg_replace("/,/"," AND ",$this->where) : false;
             $this->order = (!empty($this->order)) ? "ORDER BY ".$this->order : false;
             $this->limit = (!empty($this->limit)) ? "LIMIT ".$this->limit : false;
-            $this->sQuery = "UPDATE `".$this->tablePrefix.$this->tableName."` SET {$values_update} {$this->where} {$this->order} {$this->limit}";
+            $this->sQuery = "UPDATE `".$this->tablePrefix.$this->table."` SET {$values_update} {$this->where} {$this->order} {$this->limit}";
             if($this->exit) $this->exitCode();
             else{
                 if($this->sQuery == $this->Init($this->sQuery)->queryString){
@@ -203,6 +204,7 @@ class SQLCore extends \PDO{
 
     /**
      * @param array $localArgs
+     * @param array $parameters
      * @return int (last id)
      */
     public function InsertRow(array $localArgs = array(), array $parameters = array()){
@@ -234,7 +236,7 @@ class SQLCore extends \PDO{
         }
         try
         {
-            $this->sQuery = "INSERT INTO ".$this->tablePrefix.$this->tableName."({$keys}) VALUES {$values}";
+            $this->sQuery = "INSERT INTO ".$this->tablePrefix.$this->table."({$keys}) VALUES {$values}";
             if($this->exit) $this->exitCode();
             else{
                 if($this->sQuery == $this->Init($this->sQuery)->queryString){
@@ -263,7 +265,7 @@ class SQLCore extends \PDO{
             $this->where = (!empty($this->where)) ? "WHERE ".preg_replace("/,/"," AND ",$this->where) : false;
             $this->order = (!empty($this->order)) ? "ORDER BY ".$this->order : false;
             $this->limit = (!empty($this->limit)) ? "LIMIT ".$this->limit : false;
-            $this->sQuery = "DELETE FROM `".$this->tablePrefix.$this->tableName."` {$this->where} {$this->order} {$this->limit}";
+            $this->sQuery = "DELETE FROM `".$this->tablePrefix.$this->table."` {$this->where} {$this->order} {$this->limit}";
             if($this->exit) $this->exitCode();
             else{
                 if($this->sQuery == $this->Init($this->sQuery)->queryString){
@@ -387,7 +389,7 @@ class SQLCore extends \PDO{
 
 
     /**
-     * OPERATION COLUMN BASE
+     * OPERATION TABLE,COLUMN, OTHER ROW BASE
      */
 
     /**
@@ -395,11 +397,37 @@ class SQLCore extends \PDO{
      * @return mixed
      */
     public function ColumnShow($table=""){
-        $table = (!empty($table)) ? $table : $this->tableName;
+        $table = (!empty($table)) ? $table : $this->table;
         return $this->Init("DESCRIBE `".$this->tablePrefix.$table."`")->fetchAll();
     }
 
+    /**
+     * @param string $table
+     * @param string $field
+     * @return mixed
+     */
+    public function GetMax($table="", $field=""){
+        $table = (!empty($table)) ? $table : $this->table;
+        $field = (!empty($field)) ? $field : $this->expression;
+        $max = $this->Init("SELECT MAX($field) AS `$field` FROM `".$this->tablePrefix.$table."`")->fetch();
+        if($this->type_array_result) return current($max);
+        else return $max->$field;
+    }
 
+    public function GetMin($table="", $field=""){
+        $table = (!empty($table)) ? $table : $this->table;
+        $field = (!empty($field)) ? $field : $this->expression;
+        $max = $this->Init("SELECT MIN($field) AS `$field` FROM `".$this->tablePrefix.$table."`")->fetch();
+        if($this->type_array_result) return current($max);
+        else return $max->$field;
+    }
+
+    public function GetArrayById($table="",array $array = array(1), $field="id"){
+        $this->table = (!empty($table)) ? $table : $this->table;
+        $this->where = (empty($this->where)) ? "`$field` IN (".implode(',',array_map('intval',$array)).")" : " AND `$field` IN (".implode(',',array_map('intval',$array)).")";
+        if(count($array)==1) return $this->OneResult();
+        else return $this->ArrayResults();
+    }
     /**
      * Transaction's operation
      */
@@ -455,7 +483,7 @@ class SQLCore extends \PDO{
         $localArgs = func_get_args();
         if(count($localArgs)>0){
             foreach($localArgs as $value) $this->$value = false;
-        }else $this->tableName=$this->expression=$this->str_join=$this->where=$this->group=$this->order=$this->limit=$this->exit=$this->sql_cache=$this->values=false;
+        }else $this->table=$this->expression=$this->str_join=$this->where=$this->group=$this->order=$this->limit=$this->exit=$this->sql_cache=$this->values=false;
         $this->bindParam = array();
         $this->level = 0;
     }
@@ -481,7 +509,7 @@ class SQLCore extends \PDO{
 
                 if($this->type_array_result) $this->sQuery->setFetchMode(parent::FETCH_ASSOC);
                 else $this->sQuery->setFetchMode(parent::FETCH_OBJ);
-                $this->ClearArguments("expression","str_join","where","group","order","limit","exit","sql_cache");
+                //$this->ClearArguments("expression","str_join","where","group","order","limit","exit","sql_cache");
                 return $this->sQuery;
             }
         }
@@ -504,7 +532,7 @@ class SQLCore extends \PDO{
      */
     public function OptimizeTable(array $localArgs = array()){
         $this->SetArguments($localArgs);
-        if($this->Init("OPTIMIZE TABLE `".$this->tablePrefix.$this->tableName."`")->queryString) return true;
+        if($this->Init("OPTIMIZE TABLE `".$this->tablePrefix.$this->table."`")->queryString) return true;
         else false;
     }
 
