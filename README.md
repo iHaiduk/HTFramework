@@ -249,6 +249,23 @@ $insert = $sql->QueryInsertRow("INSERT INTO ht_page(`title`,`text`) VALUES (:tit
 ### Results
 integer (last id)
     
+## Delete rows
+#### First version
+```php
+$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=5"));
+```
+#### Second version
+```php
+$delete = $sql->QueryDeleteRow("DELETE FROM `ht_page` WHERE id=5");
+```
+#### Third version
+```php
+$sql->bindMore(array(":id_delete"=>5));
+$delete = $sql->QueryDeleteRow("DELETE FROM `ht_page` WHERE id=:id_delete");
+```
+### Results
+bool true/false
+
 
 
 ## Clear all parameters for queries
@@ -288,7 +305,46 @@ $sql->Init("DROP TABLE ht_page");
 $sql->rollback();
 ```
 
+## OPTIMIZE TABLE
+Reorganizes the physical storage of table data and associated index data, to reduce storage space and improve I/O efficiency when accessing the table.
 
+#### Examples
+```php
+$sql->OptimizeTable(array("tableName"=>"page"));
+```
+### Results
+bool true/false
+
+
+##List all possible requests to work with rows(OneResult, ArrayResults, CountRow, UpdateRow, InsertRow, DeleteRow, QueryResult, Query... , ...)
+### The example on the basis of deleting rows
+#### First
+```php
+$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=5"));
+```
+#### Second
+```php
+$sql->bindMore(array(":id_delete"=>5));
+$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=:id_delete"));
+```
+#### Third
+```php
+$sql->bindMore(array(":id_delete"=>1, ":order_name"=>"title"));
+$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id>:id_delete","order"=>":order_name DESC","limit"=>2));
+```
+#### Fourth
+```php
+$delete = $sql->QueryDeleteRow("DELETE FROM `ht_page` WHERE id=5");
+```
+#### Fifth
+```php
+$delete = $sql->QueryDeleteRow("DELETE FROM `ht_page` WHERE id>:id_delete",array(":id_delete"=>2));
+```
+#### Sixth
+```php
+$sql->bindMore(array(":id_delete"=>1, ":limit_page"=>2));
+$delete = $sql->QueryDeleteRow("DELETE FROM `ht_page` WHERE id>:id_delete LIMIT :limit_page");
+```
 
 
 
@@ -301,6 +357,7 @@ $sql->ArrayResults(...);
 $sql->CountRow(...);
 $sql->UpdateRow(...);
 $sql->InsertRow(...);
+$sql->DeleteRow(...);
 
 $sql->QueryResult(...);
 $sql->QueryArrayResult(...);
@@ -319,4 +376,5 @@ $sql->rollback(...);
 $sql->Init(...);
 $sql->bindMore(...);
 $sql->ClearArguments(...);
+$sql->OptimizeTable(...);
 ```
