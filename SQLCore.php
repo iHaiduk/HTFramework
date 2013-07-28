@@ -449,7 +449,7 @@ class SQLCore extends \PDO{
                     $this->sQuery->execute($this->bindParam);
                 }else{
                     if($this->exit) $this->exitCode();
-                    $this->sQuery = $this->pdo->query($this->sQuery);
+                    $this->sQuery = $this->pdo->query($this->pdo->quote($this->sQuery));
                 }
 
                 if($this->type_array_result) $this->sQuery->setFetchMode(parent::FETCH_ASSOC);
