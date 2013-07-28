@@ -5,7 +5,7 @@
  * Datecreate   5.12.2012
  * Timecreate:  20:05
  * Daterewrite  28.07.2013
- * Timerewrite  22:40
+ * Timerewrite  23:35
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -20,7 +20,7 @@ class SQLCore extends \PDO{
     private $port;
     private $user;
     private $password;
-    private $dbname;
+    public  $dbName;
     private $charset;
     private $tablePrefix;
 
@@ -78,7 +78,7 @@ class SQLCore extends \PDO{
 
         $this->port = (!empty($this->port)) ? ';port='.$this->port : $this->port;
 
-        $dsn = $this->engine.':dbname='.$this->dbname.';host='.$this->host.$this->port;
+        $dsn = $this->engine.':dbname='.$this->dbName.';host='.$this->host.$this->port;
         try
         {
             $this->pdo = new PDO($dsn, $this->user, $this->password, array(parent::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \''.$this->charset.'\''));
@@ -391,6 +391,39 @@ class SQLCore extends \PDO{
     /**
      * OPERATION TABLE,COLUMN, OTHER ROW BASE
      */
+
+    /**
+     * @param array $localArgs
+     * @return bool
+     */
+    public function DatabaseCreate(array $localArgs = array()){
+        $this->SetArguments($localArgs);
+        $test = $this->pdo->exec('CREATE DATABASE IF NOT EXISTS `'.$this->dbName.'`; DROP DATABASE `'.$this->dbName.'`; CREATE DATABASE IF NOT EXISTS `'.$this->dbName.'`;');
+        return $test;
+        if($this->Init('DROP DATABASE `'.$this->dbName.'`')->queryString) return true;
+    }
+
+    /**
+     * @param array $localArgs
+     * @return bool
+     */
+    public function DatabaseSelect(array $localArgs = array()){
+        $this->SetArguments($localArgs);
+        $this->pdo->exec('USE `'.$this->dbName.'`');
+        return true;
+    }
+
+    /**
+     * @param array $localArgs
+     * @return bool
+     */
+    public function DatabaseDrop(array $localArgs = array()){
+        $this->SetArguments($localArgs);
+        if($this->Init('DROP DATABASE `'.$this->dbName.'`')->queryString) return true;
+    }
+
+
+
 
     /**
      * @param string $table
