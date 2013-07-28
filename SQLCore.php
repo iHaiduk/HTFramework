@@ -398,9 +398,7 @@ class SQLCore extends \PDO{
      */
     public function DatabaseCreate(array $localArgs = array()){
         $this->SetArguments($localArgs);
-        $test = $this->pdo->exec('CREATE DATABASE IF NOT EXISTS `'.$this->dbName.'`; DROP DATABASE `'.$this->dbName.'`; CREATE DATABASE IF NOT EXISTS `'.$this->dbName.'`;');
-        return $test;
-        if($this->Init('DROP DATABASE `'.$this->dbName.'`')->queryString) return true;
+        return $this->pdo->exec('CREATE DATABASE IF NOT EXISTS `'.$this->dbName.'`; DROP DATABASE `'.$this->dbName.'`; CREATE DATABASE IF NOT EXISTS `'.$this->dbName.'`;');
     }
 
     /**
