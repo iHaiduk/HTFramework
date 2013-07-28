@@ -463,6 +463,10 @@ class SQLCore extends \PDO{
         }
     }
 
+    public function CloseConnect(){
+        $this->bConnected = false;
+        $this->pdo = null;
+    }
     /**
      * @param array $localArgs
      * @return bool
