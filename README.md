@@ -327,6 +327,38 @@ bool true/false
 $sql->CloseConnect();
 ```
 
+##View all info columns
+### Examples
+#### First version
+```php
+//$sql->type_array_result = false; - for object
+$column = $sql->ColumnShow("page");
+```
+#### Second version
+```php
+//$sql->type_array_result = false; - for object
+$sql->tableName = "page";
+$column = $sql->ColumnShow();
+```
+### Results
+```php
+(
+    [0] => Array
+        (
+            [Field] => id
+            [Type] => int(11)
+            [Null] => NO
+            [Key] => PRI
+            [Default] => 
+            [Extra] => auto_increment
+        )
+    [1] => Array
+        (
+            ..............
+        )
+    ............
+)
+```
 
 # Other Info
 
@@ -394,6 +426,10 @@ $sql->QueryUpdateRow(...);
 $sql->QueryInsertRow(...);
 $sql->QueryDeleteRow(...);
 $sql->QueryHasRow(...);
+```
+#### Operation with column
+```php
+$column = $sql->ColumnShow(...);
 ```
 #### Operation transaction
 ```php
