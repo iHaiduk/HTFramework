@@ -385,6 +385,7 @@ $sql->CountRow(...);
 $sql->UpdateRow(...);
 $sql->InsertRow(...);
 $sql->DeleteRow(...);
+$sql->HasRow(...);
 
 $sql->QueryResult(...);
 $sql->QueryArrayResult(...);
@@ -392,6 +393,7 @@ $sql->QueryCountRow(...);
 $sql->QueryUpdateRow(...);
 $sql->QueryInsertRow(...);
 $sql->QueryDeleteRow(...);
+$sql->QueryHasRow(...);
 ```
 #### Operation transaction
 ```php
