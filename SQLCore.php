@@ -5,7 +5,7 @@
  * Datecreate   5.12.2012
  * Timecreate:  20:05
  * Daterewrite  28.07.2013
- * Timerewrite  13:25
+ * Timerewrite  17:15
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -28,9 +28,7 @@ class SQLCore extends \PDO{
     private $settings;
     private $settingsFile="settings.ini.php";
     private $bConnected = false;
-    private $query;
     private $sQuery;
-    private $parameters;
     private $bindParam;
 
     public $tableName;
@@ -284,6 +282,23 @@ class SQLCore extends \PDO{
             die();
         }
     }
+
+    /**
+     * @param array $localArgs
+     * @param array $parameters
+     * @return bool
+     */
+    public function HasRow(array $localArgs = array(), array $parameters = array()){
+        $this->SetArguments($localArgs);
+        $temp = $this->type_array_result;
+        $this->type_array_result = true;
+        $this->bindMore($parameters);
+        $id = $this->OneResult($localArgs, $parameters);
+        $this->type_array_result = $temp;
+        if(is_array($id) && current($id)!=0) return true;
+        else return false;
+    }
+
     /**
      * @param string $query
      * @param array $localArgs
@@ -449,7 +464,7 @@ class SQLCore extends \PDO{
                     $this->sQuery->execute($this->bindParam);
                 }else{
                     if($this->exit) $this->exitCode();
-                    $this->sQuery = $this->pdo->query($this->pdo->quote($this->sQuery));
+                    $this->sQuery = $this->pdo->query($this->sQuery);
                 }
 
                 if($this->type_array_result) $this->sQuery->setFetchMode(parent::FETCH_ASSOC);
@@ -462,7 +477,6 @@ class SQLCore extends \PDO{
         {
             # Write into log and display Exception
             echo $e->getMessage();
-            print_r($this->pdo->errorInfo());
             die();
         }
     }
