@@ -316,7 +316,8 @@ $sql->OptimizeTable(array("tableName"=>"page"));
 bool true/false
 
 
-##List all possible requests to work with rows(OneResult, ArrayResults, CountRow, UpdateRow, InsertRow, DeleteRow, QueryResult, Query... , ...)
+##List all possible requests to work with rows
+(OneResult, ArrayResults, CountRow, UpdateRow, InsertRow, DeleteRow, QueryResult, Query... , ...)
 ### The example on the basis of deleting rows
 #### First
 ```php
@@ -364,6 +365,7 @@ $sql->QueryArrayResult(...);
 $sql->QueryCountRow(...);
 $sql->QueryUpdateRow(...);
 $sql->QueryInsertRow(...);
+$sql->QueryDeleteRow(...);
 ```
 #### Operation transaction
 ```php
