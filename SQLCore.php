@@ -5,7 +5,7 @@
  * Datecreate   5.12.2012
  * Timecreate:  20:05
  * Daterewrite  28.07.2013
- * Timerewrite  17:15
+ * Timerewrite  17:45
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -301,36 +301,32 @@ class SQLCore extends \PDO{
 
     /**
      * @param string $query
-     * @param array $localArgs
+     * @param array $parameters
      * @return mixed
      * @return_variable one row in base
      */
-    public function QueryResult($query="", array $localArgs = array(), array $parameters = array()){
-        $this->SetArguments($localArgs);
+    public function QueryResult($query="", array $parameters = array()){
         $this->bindMore($parameters);
         return $this->Init($query)->fetch();
     }
 
     /**
      * @param string $query
-     * @param array $localArgs
+     * @param array $parameters
      * @return mixed
      * @return_variable all row in base
      */
-    public function QueryArrayResult($query="", array $localArgs = array(), array $parameters = array()){
-        $this->SetArguments($localArgs);
+    public function QueryArrayResult($query="", array $parameters = array()){
         $this->bindMore($parameters);
         return $this->Init($query)->fetchAll();
     }
 
     /**
      * @param string $query
-     * @param array $localArgs
      * @param array $parameters
      * @return int
      */
-    public function QueryCountRow($query="", array $localArgs = array(), array $parameters = array()){
-        $this->SetArguments($localArgs);
+    public function QueryCountRow($query="", array $parameters = array()){
         $this->bindMore($parameters);
         return $this->Init($query)->rowCount();
     }
@@ -375,6 +371,21 @@ class SQLCore extends \PDO{
             return true;
         }
         else false;
+    }
+
+    /**
+     * @param string $query
+     * @param array $parameters
+     * @return bool
+     */
+    public function QueryHasRow($query="", array $parameters = array()){
+        $this->bindMore($parameters);
+        $temp = $this->type_array_result;
+        $this->type_array_result = true;
+        $id = $this->QueryResult($query,$parameters);
+        $this->type_array_result = $temp;
+        if(is_array($id) && current($id)!=0) return true;
+        else return false;
     }
 
 
