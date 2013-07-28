@@ -5,7 +5,7 @@
  * Datecreate   5.12.2012
  * Timecreate:  20:05
  * Daterewrite  28.07.2013
- * Timerewrite  17:45
+ * Timerewrite  20:20
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -54,7 +54,6 @@ class SQLCore extends \PDO{
      * @param   array $localArgs
      * @job     initialize function SetArguments, Connect
      */
-
     function __construct(array $localArgs = array())
     {
         $this->SetArguments($localArgs);
@@ -102,12 +101,10 @@ class SQLCore extends \PDO{
      * OPERATION ROWS BASE
      */
 
-
     /**
      * @param array $localArgs
      * @return object
      */
-
     public function SelectQuery(array $localArgs = array()){
         try
         {
@@ -389,11 +386,27 @@ class SQLCore extends \PDO{
     }
 
 
+    /**
+     * OPERATION COLUMN BASE
+     */
+
+    /**
+     * @param string $table
+     * @return mixed
+     */
+    public function ColumnShow($table=""){
+        $table = (!empty($table)) ? $table : $this->tableName;
+        return $this->Init("DESCRIBE `".$this->tablePrefix.$table."`")->fetchAll();
+    }
+
 
     /**
      * Transaction's operation
      */
 
+    /**
+     * @return bool
+     */
     public function beginTransaction()
     {
         if(!$this->transactionCounter++)
@@ -401,6 +414,9 @@ class SQLCore extends \PDO{
         return $this->transactionCounter >= 0;
     }
 
+    /**
+     * @return bool
+     */
     public function commit()
     {
         if(!--$this->transactionCounter)
@@ -408,6 +424,9 @@ class SQLCore extends \PDO{
         return $this->transactionCounter >= 0;
     }
 
+    /**
+     * @return bool
+     */
     public function rollback()
     {
         if($this->transactionCounter >= 0)
@@ -419,23 +438,9 @@ class SQLCore extends \PDO{
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * OTHER Public, Private functions
      */
-
 
     /**
      * @param   array $localArgs
@@ -446,10 +451,6 @@ class SQLCore extends \PDO{
         if(isset($localArgs)) foreach($localArgs as $key=>$value) if(!empty($value)) $this->$key = $value;
     }
 
-    /**
-     * @param   mixed $localArgs
-     * @job     clear variable
-     */
     public function ClearArguments(){
         $localArgs = func_get_args();
         if(count($localArgs)>0){
@@ -496,6 +497,7 @@ class SQLCore extends \PDO{
         $this->bConnected = false;
         $this->pdo = null;
     }
+
     /**
      * @param array $localArgs
      * @return bool
@@ -505,6 +507,7 @@ class SQLCore extends \PDO{
         if($this->Init("OPTIMIZE TABLE `".$this->tablePrefix.$this->tableName."`")->queryString) return true;
         else false;
     }
+
     /**
      * @set     Set variables for replace in query
      * @param   array $parameters
