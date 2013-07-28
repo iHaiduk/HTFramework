@@ -5,7 +5,7 @@
  * Datecreate   5.12.2012
  * Timecreate:  20:05
  * Daterewrite  28.07.2013
- * Timerewrite  13:00
+ * Timerewrite  13:25
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -57,10 +57,14 @@ class SQLCore extends \PDO{
      * @job     initialize function SetArguments, Connect
      */
 
-    public function __construct(array $localArgs = array())
+    function __construct(array $localArgs = array())
     {
         $this->SetArguments($localArgs);
         $this->Connect();
+    }
+
+    function __destruct() {
+        $this->CloseConnect();
     }
 
     /**
@@ -496,5 +500,4 @@ class SQLCore extends \PDO{
             $this->levelArray($v);
         }
     }
-
 }
