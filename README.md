@@ -325,8 +325,7 @@ $delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=5"));
 ```
 #### Second
 ```php
-$sql->bindMore(array(":id_delete"=>5));
-$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=:id_delete"));
+$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=:id_delete"),array(":id_delete"=>5));
 ```
 #### Third
 ```php
