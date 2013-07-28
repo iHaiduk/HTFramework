@@ -5,7 +5,7 @@
  * Datecreate   5.12.2012
  * Timecreate:  20:05
  * Daterewrite  28.07.2013
- * Timerewrite  00:55
+ * Timerewrite  13:00
  * Codefile     UTF-8
  * Copyright    HT Group 2012-2013
  * Name		    SQLCore
@@ -171,8 +171,9 @@ class SQLCore extends \PDO{
      * @param array $localArgs
      * @return bool
      */
-    public function UpdateRow(array $localArgs = array()){
+    public function UpdateRow(array $localArgs = array(), array $parameters = array()){
         $this->SetArguments($localArgs);
+        $this->bindMore($parameters);
         $values_update = "";
         foreach($this->values as $key=>$value){
             $value = (preg_match("/.*?(\\(.*\\))/is",$value)) ? $value : "'{$value}'";
@@ -187,7 +188,10 @@ class SQLCore extends \PDO{
             $this->sQuery = "UPDATE `".$this->tablePrefix.$this->tableName."` SET {$values_update} {$this->where} {$this->order} {$this->limit}";
             if($this->exit) $this->exitCode();
             else{
-                if($this->sQuery == $this->Init($this->sQuery)->queryString) return true;
+                if($this->sQuery == $this->Init($this->sQuery)->queryString){
+                    $this->OptimizeTable();
+                    return true;
+                }
                 else false;
             }
         }
@@ -202,8 +206,9 @@ class SQLCore extends \PDO{
      * @param array $localArgs
      * @return int (last id)
      */
-    public function InsertRow(array $localArgs = array()){
+    public function InsertRow(array $localArgs = array(), array $parameters = array()){
         $this->SetArguments($localArgs);
+        $this->bindMore($parameters);
         $this->level=0;
         $this->levelArray($this->values);
 
@@ -233,7 +238,10 @@ class SQLCore extends \PDO{
             $this->sQuery = "INSERT INTO ".$this->tablePrefix.$this->tableName."({$keys}) VALUES {$values}";
             if($this->exit) $this->exitCode();
             else{
-                if($this->sQuery == $this->Init($this->sQuery)->queryString) return $this->pdo->lastInsertId();
+                if($this->sQuery == $this->Init($this->sQuery)->queryString){
+                    $this->OptimizeTable();
+                    return $this->pdo->lastInsertId();
+                }
                 else false;
             }
         }
@@ -244,6 +252,34 @@ class SQLCore extends \PDO{
         }
     }
 
+    /**
+     * @param array $localArgs
+     * @param array $parameters
+     * @return bool
+     */
+    public function DeleteRow(array $localArgs = array(), array $parameters = array()){
+        $this->SetArguments($localArgs);
+        $this->bindMore($parameters);
+        try{
+            $this->where = (!empty($this->where)) ? "WHERE ".preg_replace("/,/"," AND ",$this->where) : false;
+            $this->order = (!empty($this->order)) ? "ORDER BY ".$this->order : false;
+            $this->limit = (!empty($this->limit)) ? "LIMIT ".$this->limit : false;
+            $this->sQuery = "DELETE FROM `".$this->tablePrefix.$this->tableName."` {$this->where} {$this->order} {$this->limit}";
+            if($this->exit) $this->exitCode();
+            else{
+                if($this->sQuery == $this->Init($this->sQuery)->queryString){
+                    $this->OptimizeTable();
+                    return true;
+                }
+                else false;
+            }
+        }
+        catch (PDOException $e)
+        {
+            echo $e->getMessage();
+            die();
+        }
+    }
     /**
      * @param string $query
      * @param array $localArgs
@@ -287,7 +323,10 @@ class SQLCore extends \PDO{
      */
     public function QueryUpdateRow($query="", array $parameters = array()){
         $this->bindMore($parameters);
-        if($query == $this->Init($query)->queryString) return true;
+        if($query == $this->Init($query)->queryString){
+            $this->OptimizeTable();
+            return true;
+        }
         else false;
     }
 
@@ -298,7 +337,24 @@ class SQLCore extends \PDO{
      */
     public function QueryInsertRow($query="", array $parameters = array()){
         $this->bindMore($parameters);
-        if($query == $this->Init($query)->queryString) return $this->pdo->lastInsertId();
+        if($query == $this->Init($query)->queryString){
+            $this->OptimizeTable();
+            return $this->pdo->lastInsertId();
+        }
+        else false;
+    }
+
+    /**
+     * @param string $query
+     * @param array $parameters
+     * @return bool
+     */
+    public function QueryDeleteRow($query="", array $parameters = array()){
+        $this->bindMore($parameters);
+        if($query == $this->Init($query)->queryString){
+            $this->OptimizeTable();
+            return true;
+        }
         else false;
     }
 
@@ -357,7 +413,7 @@ class SQLCore extends \PDO{
      */
 
     private function SetArguments(array $localArgs = array()){
-        if(isset($localArgs)) foreach($localArgs as $key=>$value) $this->$key = $value;
+        if(isset($localArgs)) foreach($localArgs as $key=>$value) if(!empty($value)) $this->$key = $value;
     }
 
     /**
@@ -402,10 +458,20 @@ class SQLCore extends \PDO{
         {
             # Write into log and display Exception
             echo $e->getMessage();
+            print_r($this->pdo->errorInfo());
             die();
         }
     }
 
+    /**
+     * @param array $localArgs
+     * @return bool
+     */
+    public function OptimizeTable(array $localArgs = array()){
+        $this->SetArguments($localArgs);
+        if($this->Init("OPTIMIZE TABLE `".$this->tablePrefix.$this->tableName."`")->queryString) return true;
+        else false;
+    }
     /**
      * @set     Set variables for replace in query
      * @param   array $parameters
@@ -414,7 +480,9 @@ class SQLCore extends \PDO{
 
     private function exitCode(){
         $this->ClearArguments("expression","str_join","where","group","order","limit","exit","sql_cache");
-        exit($this->sQuery."\n".print_r($this->bindParam,true));
+        echo $this->sQuery."\n";
+        if(!empty($this->bindParam)) print_r($this->bindParam,true);
+        exit;
     }
 
     private function levelArray($array){
