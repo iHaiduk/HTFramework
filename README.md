@@ -44,9 +44,9 @@ class functions.
 ## All of the options available for the call
 ```php
 $pages = $sql->ArrayResults(array(
-    "tableName"=>"page",
-    "expression" => "id, title, page",
-    "values" => array(...),
+        "table"=>"page",
+        "expression" => "id, title, page",
+        "values" => array(...),
     "where" => "id > 2",
     "group" => "text",
     "order => "id DESC",
@@ -61,12 +61,12 @@ $pages = $sql->ArrayResults(array(
 ### Execute the query
 #### First version which returns an array of
 ```php
-$page = $sql->OneResult(array("tableName"=>"page"));
+$page = $sql->OneResult(array("table"=>"page"));
 ```
 
 #### Second version which returns an object
 ```php
-$page = $sql->OneResult(array("tableName"=>"page", "type_array_result"=>false));
+$page = $sql->OneResult(array("table"=>"page", "type_array_result"=>false));
 ```
 #### Results Array
 ```php
@@ -89,12 +89,12 @@ $pages->text
 ### Execute the query
 #### First version which returns an array of
 ```php
-$pages = $sql->ArrayResults(array("tableName"=>"page"));
+$pages = $sql->ArrayResults(array("table"=>"page"));
 ```
 
 #### Second version which returns an object
 ```php
-$pages = $sql->ArrayResults(array("tableName"=>"page", "type_array_result"=>false));
+$pages = $sql->ArrayResults(array("table"=>"page", "type_array_result"=>false));
 ```
 #### Results Array
 ```php
@@ -189,7 +189,7 @@ The result is similar point: Choose from the database one record
 
 #### Standart query
 ```php
-$count = $sql->CountRow(array("tableName"=>"page"));
+$count = $sql->CountRow(array("table"=>"page"));
 ```
 #### Your query
 ```php
@@ -199,7 +199,7 @@ $count = $sql->QueryCountRow("SELECT id FROM `ht_page`");
 ## Update rows
 #### First version
 ```php
-$update = $sql->UpdateRow(array("tableName"=>"page","values"=>array("title"=>"My update")));
+$update = $sql->UpdateRow(array("table"=>"page","values"=>array("title"=>"My update")));
 ```
 #### Second version
 ```php
@@ -216,7 +216,7 @@ bool true/false
 ## Insert data to table
 #### First version
 ```php
-$insert = $sql->InsertRow(array("tableName"=>"page","values"=>
+$insert = $sql->InsertRow(array("table"=>"page","values"=>
                 array("
                     title"=>"Next page",
                     "text"=>"Next Description text"
@@ -225,7 +225,7 @@ $insert = $sql->InsertRow(array("tableName"=>"page","values"=>
 ```
 #### Second version
 ```php
-$insert = $sql->InsertRow(array("tableName"=>"page","values"=>
+$insert = $sql->InsertRow(array("table"=>"page","values"=>
                 array(
                     array(
                         "title"=>"Next page",
@@ -252,7 +252,7 @@ integer (last id)
 ## Delete rows
 #### First version
 ```php
-$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=5"));
+$delete = $sql->DeleteRow(array("table"=>"page","where"=>"id=5"));
 ```
 #### Second version
 ```php
@@ -268,7 +268,7 @@ bool true/false
 
 ## Checking the existence of records in the database
 ```php
-$exist = $sql->HasRow(array("tableName"=>"page","where"=>"id=3"));
+$exist = $sql->HasRow(array("table"=>"page","where"=>"id=3"));
 
 $exist = $sql->QueryHasRow("SELECT id FROM `ht_page` WHERE id=3");
 ```
@@ -282,7 +282,7 @@ $sql->ClearArguments();
 
 ## Clear some of the parameters for queries
 ```php
-$sql->ClearArguments("tableName","where","limit");
+$sql->ClearArguments("table","where","limit");
 ```
 
 
@@ -317,7 +317,7 @@ Reorganizes the physical storage of table data and associated index data, to red
 
 #### Examples
 ```php
-$sql->OptimizeTable(array("tableName"=>"page"));
+$sql->OptimizeTable(array("table"=>"page"));
 ```
 ### Results
 bool true/false
@@ -337,7 +337,7 @@ $column = $sql->ColumnShow("page");
 #### Second version
 ```php
 //$sql->type_array_result = false; - for object
-$sql->tableName = "page";
+$sql->table = "page";
 $column = $sql->ColumnShow();
 ```
 ### Results
@@ -360,6 +360,43 @@ $column = $sql->ColumnShow();
 )
 ```
 
+## More features
+### Return the maximum value of the field
+```php
+$sql->table = "page";
+$sql->expression = "id";
+$sql->GetMax();
+// OR
+$sql->GetMax("page","id");
+```
+### Results
+mixed data (max value in expression)
+
+### Return the minimum value of the field
+```php
+$sql->table = "page";
+$sql->expression = "id";
+$sql->GetMin();
+// OR
+$sql->GetMin("page","id");
+```
+### Results
+mixed data (max value in expression)
+
+### Simplified data output from the database for specific records
+```php
+$sql->table = "page";
+//$sql->expression = "*";
+$sql->GetArrayById(null, array(2,3,5));
+// OR
+$sql->GetArrayById("page", range(1,5));
+// OR
+$sql->GetArrayById("page", range(1,5), "uid_page");
+```
+### Results
+An array of data, depending on the parameters passed
+
+
 # Other Info
 
 #### How do I get a response in the form of an object for his own request?
@@ -380,16 +417,16 @@ $pages->text
 ### The example on the basis of deleting rows
 #### First
 ```php
-$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=5"));
+$delete = $sql->DeleteRow(array("table"=>"page","where"=>"id=5"));
 ```
 #### Second
 ```php
-$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id=:id_delete"),array(":id_delete"=>5));
+$delete = $sql->DeleteRow(array("table"=>"page","where"=>"id=:id_delete"),array(":id_delete"=>5));
 ```
 #### Third
 ```php
 $sql->bindMore(array(":id_delete"=>1, ":order_name"=>"title"));
-$delete = $sql->DeleteRow(array("tableName"=>"page","where"=>"id>:id_delete","order"=>":order_name DESC","limit"=>2));
+$delete = $sql->DeleteRow(array("table"=>"page","where"=>"id>:id_delete","order"=>":order_name DESC","limit"=>2));
 ```
 #### Fourth
 ```php
@@ -427,9 +464,12 @@ $sql->QueryInsertRow(...);
 $sql->QueryDeleteRow(...);
 $sql->QueryHasRow(...);
 ```
-#### Operation with column
+#### Operation with table,column and other
 ```php
-$column = $sql->ColumnShow(...);
+$sql->ColumnShow(...);
+$sql->GetMax(...);
+$sql->GetMin(...);
+$sql->GetArrayById(...);
 ```
 #### Operation transaction
 ```php
