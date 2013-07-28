@@ -266,7 +266,14 @@ $delete = $sql->QueryDeleteRow("DELETE FROM `ht_page` WHERE id=:id_delete");
 ### Results
 bool true/false
 
+## Checking the existence of records in the database
+```php
+$exist = $sql->HasRow(array("tableName"=>"page","where"=>"id=3"));
 
+$exist = $sql->QueryHasRow("SELECT id FROM `ht_page` WHERE id=3");
+```
+### Results
+bool true/false
 
 ## Clear all parameters for queries
 ```php
@@ -320,6 +327,14 @@ bool true/false
 $sql->CloseConnect();
 ```
 
+
+# Other Info
+
+#### How do I get a response in the form of an object for his own request
+```php
+$sql->type_array_result = false;
+$page = $sql->QueryResult("SELECT * FROM `ht_page`");
+```
 
 
 
