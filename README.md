@@ -335,7 +335,12 @@ $sql->CloseConnect();
 $sql->type_array_result = false;
 $page = $sql->QueryResult("SELECT * FROM `ht_page`");
 ```
-
+#### Results
+```php
+$pages->id
+$pages->title
+$pages->text
+```
 
 
 ##List all possible requests to work with rows
