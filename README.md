@@ -12,7 +12,7 @@ host =          localhost
 ;port =         3306
 user =          root
 password =
-dbname =        site_dating
+dbName =        site_dating
 charset =       utf8
 tablePrefix =   ht_
 ```
